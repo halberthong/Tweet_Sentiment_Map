@@ -23,7 +23,7 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 
 
-public final class SentimentGet {
+public class SentimentGet implements Runnable {
 	private static OperateDB odb;
 	private static SentimentGet sg;
 	private static AmazonSQS sqs;
@@ -34,9 +34,11 @@ public final class SentimentGet {
 	private static AmazonSNS sns;
 	private static final String TopicArn = "arn:aws:sns:us-east-1:632600293075:TwittMapData";
 	
-	public static void main(String[] args) {
+	@Override
+	public void run() {
+		sg = new SentimentGet();
 		timer = new Timer();
-		SentimentGet.start();
+		sg.start();
 		df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
 	}
 	public void setMonitor() {
@@ -56,7 +58,7 @@ public final class SentimentGet {
     	};
     	timer.scheduleAtFixedRate(tsk, start, interval);
     }
-	private static void start() {
+	private void start() {
 		odb = new OperateDB();
 		try {
 			odb.connect();
@@ -84,8 +86,6 @@ public final class SentimentGet {
         // SNS
         sns = new AmazonSNSClient(credentials);
         sns.setRegion(usEast1);
-        
-		sg = new SentimentGet();
 		sg.setMonitor();
 	}
 	public void getQueueData() throws NumberFormatException, Exception {
