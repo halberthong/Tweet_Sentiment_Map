@@ -109,6 +109,6 @@ $(document).ready(function() {
 		google.maps.event.addDomListener(window, 'load', initialize);
 		setInterval(function() {
 			sendMsg();
-		}, 1000 * 3);
+		}, 1000 * 2);
 	})();
 });
